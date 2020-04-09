@@ -15,7 +15,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 COPY . /var/www
 RUN ln -s public html
-RUN chmod -R 777 /var/www/storage
+RUN chmod +x /var/www/entrypoint.sh
 
 EXPOSE 9090
-ENTRYPOINT ["php-fpm"]
+ENTRYPOINT ["sh", "/var/www/entrypoint.sh"]
