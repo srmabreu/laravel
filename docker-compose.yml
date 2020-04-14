@@ -5,6 +5,8 @@ services:
   app:
     build: .
     container_name: app
+    ports:
+      - "9000:9000"
     volumes:
       - .:/var/www
     networks:
@@ -16,6 +18,10 @@ services:
   nginx:
     build: .docker/nginx
     container_name: nginx
+    entrypoint: dockerize -template /etc/nginx/conf.d/nginx.tmpl:/etc/nginx/conf.d/nginx.conf -wait tcp://app:9000 nginx -g 'daemon off;'
+    environment:
+      - APP_HOST=app
+      - APP_PORT=9000
     restart: always
     tty: true
     ports:
@@ -24,6 +30,8 @@ services:
       - .:/var/www
     networks:
       - app-network
+    depends_on:
+      - app
   
   redis:
     image: redis:alpine
